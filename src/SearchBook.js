@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
+import BooksGrid from './BooksGrid'
 
 class SearchBook extends Component {
   handleKeyPress = (e) => {
@@ -11,16 +12,8 @@ class SearchBook extends Component {
     }
   }
 
-  handleChange = (book, e) => {
-    const value = e.target.value;
-    if (this.props.onMoveBook) {
-      this.props.onMoveBook(book, value);
-    }
-  }
-
-
   render() {
-    const { searchResult } = this.props;
+    const { searchResult, onGetBookShelf, onMoveBook} = this.props;
 
     return (
       <div className="search-books">
@@ -39,34 +32,12 @@ class SearchBook extends Component {
           </div>
         </div>
         <div className="search-books-results">
-          <ol className="books-grid">
-          {Array.isArray(searchResult) && searchResult
-            .map(book => (
-              <li key={book.id}>
-                <div className="book">
-                  <div className="book-top">
-                    <div className="book-cover" style={{width: 128, height: 193,  backgroundImage: (book.imageLinks) && (book.imageLinks.smallThumbnail) ? `url(${book.imageLinks.smallThumbnail})` : '' }}></div>
-                    <div className="book-shelf-changer">
-                      <select value={this.props.onGetBookShelf(book.id)} onChange={(e) => this.handleChange(book, e)} >
-                        <option value="move" disabled>Move to...</option>
-                        <option value="currentlyReading">Currently Reading</option>
-                        <option value="wantToRead">Want to Read</option>
-                        <option value="read">Read</option>
-                        <option value="none">None</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div className="book-title">{book.title}</div>
-                  <div className="book-authors">
-                    {book.authors ? book.authors : '' }
-                  </div>
-                </div>
-              </li>
-              )
-            )
-          }
+          <BooksGrid
+            books={searchResult}
+            onGetBookShelf={onGetBookShelf}
+            onMoveBook={onMoveBook}
+          />
           {!Array.isArray(searchResult) && <p>No results found</p>}
-          </ol>
         </div>
       </div>
     )

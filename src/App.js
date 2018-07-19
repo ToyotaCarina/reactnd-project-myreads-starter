@@ -36,7 +36,6 @@ class BooksApp extends Component {
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
       this.setState({ books })
-      console.log(books);
     })
   }
 
@@ -58,14 +57,18 @@ class BooksApp extends Component {
   }
 
   searchBook(searchText) {
-    BooksAPI.search(searchText).then((searchResult) => {
-      console.log(searchResult);
-        this.setState({ searchResult });
-    });
+    if (searchText === '') {
+      this.setState({ searchResult : [] })
+    }
+    else {
+      BooksAPI.search(searchText).then((searchResult) => {
+        this.setState({ searchResult })
+      });
+    }
+
   }
 
   getBookShelf(bookId) {
-    console.log(bookId);
     var shelfName = '';
     let book = this.state.books.find(b => b.id === bookId);
     if (book && book.shelf) {
@@ -73,9 +76,7 @@ class BooksApp extends Component {
     } else {
         shelfName = 'none';
     }
-    console.log(shelfName);
     return shelfName;
-
   }
 
   render() {
@@ -85,19 +86,17 @@ class BooksApp extends Component {
           <ListBooks
             books={this.state.books}
             shelves={this.state.shelves}
+            onGetBookShelf={this.getBookShelf}
             onMoveBook={this.moveBook}/>
         )}/>
 
         <Route path="/search" render={() => (
           <SearchBook
             searchResult={this.state.searchResult}
-            onSearchBook={this.searchBook}
-            onMoveBook={this.moveBook}
             onGetBookShelf={this.getBookShelf}
-            />
-      )} />
-
-
+            onMoveBook={this.moveBook}
+            onSearchBook={this.searchBook}/>
+        )}/>
       </div>
     )
   }

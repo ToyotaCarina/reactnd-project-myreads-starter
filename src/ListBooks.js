@@ -1,17 +1,12 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
 import sortBy from 'sort-by'
+import BooksGrid from './BooksGrid'
 
 class ListBooks extends Component {
-  handleChange = (book, e) => {
-    const value = e.target.value;
-    if (this.props.onMoveBook) {
-      this.props.onMoveBook(book, value);
-    }
-  }
 
   render() {
-    const { books, shelves } = this.props;
+    const { books, shelves, onGetBookShelf, onMoveBook } = this.props;
     books.sort(sortBy('shelf', 'title'));
     return (
       <div className="list-books">
@@ -24,32 +19,11 @@ class ListBooks extends Component {
             <div key={shelf.name} className="bookshelf">
               <h2 className="bookshelf-title">{shelf.description}</h2>
               <div className="bookshelf-books">
-                <ol className="books-grid">
-                {books
-                  .filter(book => shelf.name.includes(book.shelf))
-                  .map(book => (
-                    <li key={book.id}>
-                      <div className="book">
-                        <div className="book-top">
-                          <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div>
-                          <div className="book-shelf-changer">
-                            <select value={book.shelf} onChange={(e) => this.handleChange(book, e)} >
-                              <option value="move" disabled>Move to...</option>
-                              <option value="currentlyReading">Currently Reading</option>
-                              <option value="wantToRead">Want to Read</option>
-                              <option value="read">Read</option>
-                              <option value="none">None</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div className="book-title">{book.title}</div>
-                        <div className="book-authors">{book.authors[0]}</div>
-                      </div>
-                    </li>
-                    )
-                  )
-                }
-                </ol>
+                <BooksGrid
+                  books={books.filter(book => shelf.name.includes(book.shelf))}
+                  onGetBookShelf={onGetBookShelf}
+                  onMoveBook={onMoveBook}
+                />
               </div>
             </div>
           ))}
