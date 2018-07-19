@@ -11,6 +11,7 @@ class BooksApp extends Component {
     super();
     this.moveBook = this.moveBook.bind(this);
     this.searchBook = this.searchBook.bind(this);
+    this.getBookShelf = this.getBookShelf.bind(this);
   }
 
   state = {
@@ -46,7 +47,6 @@ class BooksApp extends Component {
         this.setState(state => ({
           books: state.books.concat([ book ])
         }))
-        console.log('added to library');
       }
 
       this.setState(state => ({
@@ -54,19 +54,28 @@ class BooksApp extends Component {
           b.id === book.id ? Object.assign(b, { shelf: shelf }) : b
         ))
       }))
-      console.log(this.state.books);
     })
   }
 
   searchBook(searchText) {
     BooksAPI.search(searchText).then((searchResult) => {
       console.log(searchResult);
-      // if (Array.isArray(searchResult) && searchResult.length > 0) {
         this.setState({ searchResult });
-      // } else {
-      //   this.setState({ searchResult : [] });
-      // }
     });
+  }
+
+  getBookShelf(bookId) {
+    console.log(bookId);
+    var shelfName = '';
+    let book = this.state.books.find(b => b.id === bookId);
+    if (book && book.shelf) {
+      shelfName = book.shelf;
+    } else {
+        shelfName = 'none';
+    }
+    console.log(shelfName);
+    return shelfName;
+
   }
 
   render() {
@@ -82,9 +91,9 @@ class BooksApp extends Component {
         <Route path="/search" render={() => (
           <SearchBook
             searchResult={this.state.searchResult}
-            myBooks={this.state.books}
             onSearchBook={this.searchBook}
             onMoveBook={this.moveBook}
+            onGetBookShelf={this.getBookShelf}
             />
       )} />
 

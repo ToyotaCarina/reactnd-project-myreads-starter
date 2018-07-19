@@ -20,8 +20,8 @@ class SearchBook extends Component {
 
 
   render() {
-    const { searchResult, myBooks } = this.props;
-    console.log(searchResult);
+    const { searchResult } = this.props;
+
     return (
       <div className="search-books">
         <div className="search-books-bar">
@@ -45,9 +45,9 @@ class SearchBook extends Component {
               <li key={book.id}>
                 <div className="book">
                   <div className="book-top">
-                    <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div>
+                    <div className="book-cover" style={{width: 128, height: 193,  backgroundImage: (book.imageLinks) && (book.imageLinks.smallThumbnail) ? `url(${book.imageLinks.smallThumbnail})` : '' }}></div>
                     <div className="book-shelf-changer">
-                      <select value={book.shelf} onChange={(e) => this.handleChange(book, e)} >
+                      <select value={this.props.onGetBookShelf(book.id)} onChange={(e) => this.handleChange(book, e)} >
                         <option value="move" disabled>Move to...</option>
                         <option value="currentlyReading">Currently Reading</option>
                         <option value="wantToRead">Want to Read</option>
