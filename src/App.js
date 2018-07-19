@@ -10,10 +10,12 @@ class BooksApp extends Component {
   constructor() {
     super();
     this.moveBook = this.moveBook.bind(this);
+    this.searchBook = this.searchBook.bind(this);
   }
 
   state = {
     books: [],
+    searchResult: [],
     shelves: [
       {
         "name": "currentlyReading",
@@ -32,20 +34,39 @@ class BooksApp extends Component {
 
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
-      console.log(this);
       this.setState({ books })
+      console.log(books);
     })
   }
 
   moveBook(book, shelf) {
-    BooksAPI.update(book, shelf).then((books) => {
+    BooksAPI.update(book, shelf).then((booksPosition) => {
+      // Add to library if book not exist
+      if (this.state.books.find(b => b.id === book.id)  === undefined) {
+        this.setState(state => ({
+          books: state.books.concat([ book ])
+        }))
+        console.log('added to library');
+      }
+
       this.setState(state => ({
         books: state.books.map((b) => (
-                  b.id === book.id ? Object.assign(b, { shelf: shelf }) : b
-                ))
+          b.id === book.id ? Object.assign(b, { shelf: shelf }) : b
+        ))
       }))
-
+      console.log(this.state.books);
     })
+  }
+
+  searchBook(searchText) {
+    BooksAPI.search(searchText).then((searchResult) => {
+      console.log(searchResult);
+      // if (Array.isArray(searchResult) && searchResult.length > 0) {
+        this.setState({ searchResult });
+      // } else {
+      //   this.setState({ searchResult : [] });
+      // }
+    });
   }
 
   render() {
@@ -59,7 +80,12 @@ class BooksApp extends Component {
         )}/>
 
         <Route path="/search" render={() => (
-          <SearchBook  />
+          <SearchBook
+            searchResult={this.state.searchResult}
+            myBooks={this.state.books}
+            onSearchBook={this.searchBook}
+            onMoveBook={this.moveBook}
+            />
       )} />
 
 

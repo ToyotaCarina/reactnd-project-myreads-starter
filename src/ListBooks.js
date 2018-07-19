@@ -3,13 +3,7 @@ import { Link } from 'react-router-dom'
 import sortBy from 'sort-by'
 
 class ListBooks extends Component {
-  constructor() {
-    super();
-    this.handleChange = this.handleChange.bind(this);
-  }
-
   handleChange = (book, e) => {
-    console.log(this);
     const value = e.target.value;
     if (this.props.onMoveBook) {
       this.props.onMoveBook(book, value);

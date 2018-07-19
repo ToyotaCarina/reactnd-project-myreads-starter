@@ -161,6 +161,32 @@ body, .app {
   cursor: pointer;
 }
 
+
+/* select:checked {
+  color: purple;
+}
+ option:checked {
+  padding-left: 14px;
+  background: url('./icons/arrow-drop-down.svg') left no-repeat;
+  color: purple;
+   background:url(/images/checkmark.gif) no-repeat 0 50%;
+} */
+/* select{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding: 20px;
+
+}
+option:checked::before {
+  content: "CC"
+} */
+
+option:hover, option:focus, option:active, option:checked {
+  font-weight: bold;
+  color: green;
+}
+
 /* book cover */
 
 .book-cover {

@@ -2,7 +2,26 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
 
 class SearchBook extends Component {
+  handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      const value = e.target.value;
+      if (this.props.onSearchBook) {
+          this.props.onSearchBook(value);
+      }
+    }
+  }
+
+  handleChange = (book, e) => {
+    const value = e.target.value;
+    if (this.props.onMoveBook) {
+      this.props.onMoveBook(book, value);
+    }
+  }
+
+
   render() {
+    const { searchResult, myBooks } = this.props;
+    console.log(searchResult);
     return (
       <div className="search-books">
         <div className="search-books-bar">
@@ -16,12 +35,38 @@ class SearchBook extends Component {
               However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
               you don't find a specific author or title. Every search is limited by search terms.
             */}
-            <input type="text" placeholder="Search by title or author"/>
-
+            <input type="text" placeholder="Search by title or author" onKeyPress={this.handleKeyPress}/>
           </div>
         </div>
         <div className="search-books-results">
-          <ol className="books-grid"></ol>
+          <ol className="books-grid">
+          {Array.isArray(searchResult) && searchResult
+            .map(book => (
+              <li key={book.id}>
+                <div className="book">
+                  <div className="book-top">
+                    <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div>
+                    <div className="book-shelf-changer">
+                      <select value={book.shelf} onChange={(e) => this.handleChange(book, e)} >
+                        <option value="move" disabled>Move to...</option>
+                        <option value="currentlyReading">Currently Reading</option>
+                        <option value="wantToRead">Want to Read</option>
+                        <option value="read">Read</option>
+                        <option value="none">None</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="book-title">{book.title}</div>
+                  <div className="book-authors">
+                    {book.authors ? book.authors : '' }
+                  </div>
+                </div>
+              </li>
+              )
+            )
+          }
+          {!Array.isArray(searchResult) && <p>No results found</p>}
+          </ol>
         </div>
       </div>
     )
