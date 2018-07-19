@@ -1,10 +1,10 @@
-import React, { Component }  from 'react';
-import { Route } from 'react-router-dom'
-import ListBooks from './ListBooks'
-import SearchBook from './SearchBook'
-import * as BooksAPI from './BooksAPI'
+import React, { Component } from "react";
+import { Route } from "react-router-dom";
+import ListBooks from "./ListBooks";
+import SearchBook from "./SearchBook";
+import * as BooksAPI from "./BooksAPI";
 
-import './App.css'
+import "./App.css";
 
 class BooksApp extends Component {
   constructor() {
@@ -19,62 +19,60 @@ class BooksApp extends Component {
     searchResult: [],
     shelves: [
       {
-        "name": "currentlyReading",
-        "description": "Currently Reading"
+        name: "currentlyReading",
+        description: "Currently Reading"
       },
       {
-        "name": "wantToRead",
-        "description": "Want to Read"
+        name: "wantToRead",
+        description: "Want to Read"
       },
       {
-        "name": "read",
-        "description": "Read"
+        name: "read",
+        description: "Read"
       }
     ]
-  }
+  };
 
   componentDidMount() {
-    BooksAPI.getAll().then((books) => {
-      this.setState({ books })
-    })
+    BooksAPI.getAll().then(books => {
+      this.setState({ books });
+    });
   }
 
   moveBook(book, shelf) {
-    BooksAPI.update(book, shelf).then((booksPosition) => {
+    BooksAPI.update(book, shelf).then(booksPosition => {
       // Add to library if book not exist
-      if (this.state.books.find(b => b.id === book.id)  === undefined) {
+      if (this.state.books.find(b => b.id === book.id) === undefined) {
         this.setState(state => ({
-          books: state.books.concat([ book ])
-        }))
+          books: state.books.concat([book])
+        }));
       }
 
       this.setState(state => ({
-        books: state.books.map((b) => (
-          b.id === book.id ? Object.assign(b, { shelf: shelf }) : b
-        ))
-      }))
-    })
+        books: state.books.map(
+          b => (b.id === book.id ? Object.assign(b, { shelf: shelf }) : b)
+        )
+      }));
+    });
   }
 
   searchBook(searchText) {
-    if (searchText === '') {
-      this.setState({ searchResult : [] })
-    }
-    else {
-      BooksAPI.search(searchText).then((searchResult) => {
-        this.setState({ searchResult })
+    if (searchText === "") {
+      this.setState({ searchResult: [] });
+    } else {
+      BooksAPI.search(searchText).then(searchResult => {
+        this.setState({ searchResult });
       });
     }
-
   }
 
   getBookShelf(bookId) {
-    var shelfName = '';
+    var shelfName = "";
     let book = this.state.books.find(b => b.id === bookId);
     if (book && book.shelf) {
       shelfName = book.shelf;
     } else {
-        shelfName = 'none';
+      shelfName = "none";
     }
     return shelfName;
   }
@@ -82,23 +80,32 @@ class BooksApp extends Component {
   render() {
     return (
       <div className="app">
-        <Route exact path='/' render={() => (
-          <ListBooks
-            books={this.state.books}
-            shelves={this.state.shelves}
-            onGetBookShelf={this.getBookShelf}
-            onMoveBook={this.moveBook}/>
-        )}/>
+        <Route
+          exact
+          path="/"
+          render={() => (
+            <ListBooks
+              books={this.state.books}
+              shelves={this.state.shelves}
+              onGetBookShelf={this.getBookShelf}
+              onMoveBook={this.moveBook}
+            />
+          )}
+        />
 
-        <Route path="/search" render={() => (
-          <SearchBook
-            searchResult={this.state.searchResult}
-            onGetBookShelf={this.getBookShelf}
-            onMoveBook={this.moveBook}
-            onSearchBook={this.searchBook}/>
-        )}/>
+        <Route
+          path="/search"
+          render={() => (
+            <SearchBook
+              searchResult={this.state.searchResult}
+              onGetBookShelf={this.getBookShelf}
+              onMoveBook={this.moveBook}
+              onSearchBook={this.searchBook}
+            />
+          )}
+        />
       </div>
-    )
+    );
   }
 }
 

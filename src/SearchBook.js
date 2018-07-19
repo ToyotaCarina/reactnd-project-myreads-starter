@@ -1,24 +1,26 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom'
-import BooksGrid from './BooksGrid'
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import BooksGrid from "./BooksGrid";
 
 class SearchBook extends Component {
-  handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
+  handleKeyPress = e => {
+    if (e.key === "Enter") {
       const value = e.target.value;
       if (this.props.onSearchBook) {
-          this.props.onSearchBook(value);
+        this.props.onSearchBook(value);
       }
     }
-  }
+  };
 
   render() {
-    const { searchResult, onGetBookShelf, onMoveBook} = this.props;
+    const { searchResult, onGetBookShelf, onMoveBook } = this.props;
 
     return (
       <div className="search-books">
         <div className="search-books-bar">
-          <Link to="/" className="close-search">Close</Link>
+          <Link to="/" className="close-search">
+            Close
+          </Link>
           <div className="search-books-input-wrapper">
             {/*
               NOTES: The search from BooksAPI is limited to a particular set of search terms.
@@ -28,7 +30,11 @@ class SearchBook extends Component {
               However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
               you don't find a specific author or title. Every search is limited by search terms.
             */}
-            <input type="text" placeholder="Search by title or author" onKeyPress={this.handleKeyPress}/>
+            <input
+              type="text"
+              placeholder="Search by title or author"
+              onKeyPress={this.handleKeyPress}
+            />
           </div>
         </div>
         <div className="search-books-results">
@@ -40,8 +46,8 @@ class SearchBook extends Component {
           {!Array.isArray(searchResult) && <p>No results found</p>}
         </div>
       </div>
-    )
+    );
   }
 }
 
-export default SearchBook
+export default SearchBook;
